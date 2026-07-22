@@ -9,15 +9,48 @@ exports.listOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       include: {
-        user: { select: { id: true, name: true, email: true } },
-        items: { include: { product: { select: { id: true, name: true, slug: true } } } },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        discount: true,
+        orderItems: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-    res.json(orders);
+
+    // Keep "items" in the API response so the existing frontend still works.
+    const formattedOrders = orders.map((order) => ({
+      ...order,
+      items: order.orderItems,
+    }));
+
+    return res.status(200).json(formattedOrders);
   } catch (error) {
-    console.error('listOrders error:', error);
-    res.status(500).json({ message: 'Unable to load orders' });
+    console.error("listOrders error:", error);
+
+    return res.status(500).json({
+      message: "Unable to load orders",
+      error:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : undefined,
+    });
   }
 };
 
