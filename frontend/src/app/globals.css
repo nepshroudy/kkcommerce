@@ -22,3 +22,23 @@ body{background:#070707;color:#f7f1e8}.gold{color:#d4af37}.card{background:#111;
 .admin-grid.two-column { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
 .order-total { text-align:right; margin-top:1rem; }
 @media (max-width: 760px) { .admin-grid.two-column { grid-template-columns:1fr; } }
+
+
+/* Phase 2A: discounts */
+.success-box { background: #ecfdf3; border: 1px solid #a7f3d0; color: #166534; padding: .85rem 1rem; border-radius: .75rem; margin-bottom: 1rem; }
+.discount-form { margin-bottom: 1.5rem; }
+.discount-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.discount-form-grid label { display: flex; flex-direction: column; gap: .4rem; font-weight: 600; }
+.discount-form-grid input, .discount-form-grid select { width: 100%; }
+.discount-description { grid-column: span 2; }
+.checkbox-label { flex-direction: row !important; align-items: center; align-self: end; padding-bottom: .8rem; }
+.checkbox-label input { width: auto; }
+.form-actions { display: flex; gap: .75rem; margin-top: 1.25rem; }
+.discount-entry { display: grid !important; grid-template-columns: 1fr auto; gap: .5rem; margin: 1rem 0; }
+.discount-entry input { min-width: 0; }
+.discount-entry button { border: 1px solid #111827; padding: .65rem .9rem; border-radius: .55rem; font-weight: 700; }
+.discount-success { color: #166534; font-size: .9rem; margin: .4rem 0 .8rem; }
+.order-totals { text-align: right; margin-top: 1rem; }
+.status-active { background: #dcfce7; color: #166534; }
+@media (max-width: 900px) { .discount-form-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .discount-form-grid { grid-template-columns: 1fr; } .discount-description { grid-column: span 1; } }

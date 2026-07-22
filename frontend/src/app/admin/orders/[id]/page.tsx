@@ -1,55 +1,7 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
-
+"use client";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 type Item = { id: number; quantity: number; price: string; product: { name: string } };
-type Order = { id: number; customerName: string; customerEmail: string; shippingAddress: string; total: string; status: string; createdAt: string; items: Item[] };
-const statuses = ['PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
-
-export default function AdminOrderPage({ params }: { params: { id: string } }) {
-  const [order, setOrder] = useState<Order | null>(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    api<Order>(`/admin/orders/${params.id}`, { authenticated: true }).then(setOrder).catch((err) => setError(err.message));
-  }, [params.id]);
-
-  async function updateStatus(status: string) {
-    try {
-      const updated = await api<Order>(`/admin/orders/${params.id}/status`, { method: 'PATCH', body: JSON.stringify({ status }), authenticated: true });
-      setOrder(updated);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to update status');
-    }
-  }
-
-  if (error) return <p className="error-message">{error}</p>;
-  if (!order) return <p>Loading order...</p>;
-
-  return (
-    <section>
-      <div className="admin-page-heading"><div><p className="eyebrow">Order</p><h1>#{order.id}</h1></div></div>
-      <div className="admin-grid two-column">
-        <div className="admin-card">
-          <h2>Customer</h2>
-          <p><strong>{order.customerName}</strong><br />{order.customerEmail}</p>
-          <h3>Shipping address</h3><p>{order.shippingAddress}</p>
-        </div>
-        <div className="admin-card">
-          <h2>Status</h2>
-          <select value={order.status} onChange={(e) => updateStatus(e.target.value)}>
-            {statuses.map((status) => <option key={status}>{status}</option>)}
-          </select>
-          <p>Placed {new Date(order.createdAt).toLocaleString()}</p>
-        </div>
-      </div>
-      <div className="admin-card table-wrap">
-        <table><thead><tr><th>Product</th><th>Quantity</th><th>Price</th><th>Line total</th></tr></thead>
-          <tbody>{order.items.map((item) => <tr key={item.id}><td>{item.product.name}</td><td>{item.quantity}</td><td>£{Number(item.price).toFixed(2)}</td><td>£{(Number(item.price) * item.quantity).toFixed(2)}</td></tr>)}</tbody>
-        </table>
-        <h2 className="order-total">Total: £{Number(order.total).toFixed(2)}</h2>
-      </div>
-    </section>
-  );
-}
+type Order = { id: number; customerName: string; customerEmail: string; shippingAddress: string; subtotal: string; discountAmount: string; discountCode?: string | null; total: string; status: string; createdAt: string; items: Item[] };
+const statuses = ["PENDING", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"];
+export default function AdminOrderPage({ params }: { params: { id: string } }) { const [order, setOrder] = useState<Order | null>(null); const [error, setError] = useState(""); useEffect(() => { api<Order>(`/admin/orders/${params.id}`, { authenticated: true }).then(setOrder).catch((err) => setError(err.message)); }, [params.id]); async function updateStatus(status: string) { try { setOrder(await api<Order>(`/admin/orders/${params.id}/status`, { method: "PATCH", body: JSON.stringify({ status }), authenticated: true })); } catch (err) { setError(err instanceof Error ? err.message : "Unable to update status"); } } if (error) return <p className="error-message">{error}</p>; if (!order) return <p>Loading order...</p>; return <section><div className="admin-page-heading"><div><p className="eyebrow">Order</p><h1>#{order.id}</h1></div></div><div className="admin-grid two-column"><div className="admin-card"><h2>Customer</h2><p><strong>{order.customerName}</strong><br/>{order.customerEmail}</p><h3>Shipping address</h3><p>{order.shippingAddress}</p></div><div className="admin-card"><h2>Status</h2><select value={order.status} onChange={(e) => updateStatus(e.target.value)}>{statuses.map((status) => <option key={status}>{status}</option>)}</select><p>Placed {new Date(order.createdAt).toLocaleString()}</p>{order.discountCode && <p><strong>Discount:</strong> {order.discountCode}</p>}</div></div><div className="admin-card table-wrap"><table><thead><tr><th>Product</th><th>Quantity</th><th>Price</th><th>Line total</th></tr></thead><tbody>{order.items.map((item) => <tr key={item.id}><td>{item.product.name}</td><td>{item.quantity}</td><td>£{Number(item.price).toFixed(2)}</td><td>£{(Number(item.price) * item.quantity).toFixed(2)}</td></tr>)}</tbody></table><div className="order-totals"><p>Subtotal: £{Number(order.subtotal || order.total).toFixed(2)}</p>{Number(order.discountAmount) > 0 && <p>Discount: -£{Number(order.discountAmount).toFixed(2)}</p>}<h2>Total: £{Number(order.total).toFixed(2)}</h2></div></div></section>; }

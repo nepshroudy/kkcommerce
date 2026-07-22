@@ -30,6 +30,7 @@ app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 app.use('/api/admin/orders', require('./routes/adminOrderRoutes'));
 app.use('/api/admin/customers', require('./routes/customerRoutes'));
 app.use('/api/account', require('./routes/accountRoutes'));
+app.use('/api/discounts', require('./routes/discountRoutes'));
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
