@@ -1,18 +1,11 @@
 const prisma = require("../utils/prisma");
 const { validateDiscount } = require("./discountController");
+const { calculateOrderPricing } = require("../services/pricingService");
 
-const formatOrder = (order) => {
-  if (!order) return order;
-
-  const formattedOrder = {
-    ...order,
-    items: order.orderItems || [],
-  };
-
-  delete formattedOrder.orderItems;
-
-  return formattedOrder;
-};
+const formatOrder = (order) => ({
+  ...order,
+  items: order.orderItems || [],
+});
 
 exports.create = async (req, res) => {
   try {
@@ -36,91 +29,33 @@ exports.create = async (req, res) => {
       });
     }
 
-    const productIds = [
-      ...new Set(
-        items
-          .map((item) => Number(item.productId))
-          .filter((productId) => Number.isInteger(productId) && productId > 0)
-      ),
-    ];
+    // Step 1: Calculate pricing
+    const pricing = await calculateOrderPricing({ items });
 
-    if (productIds.length !== items.length) {
-      return res.status(400).json({
-        message: "One or more product IDs are invalid",
-      });
-    }
-
-    const products = await prisma.product.findMany({
-      where: {
-        id: {
-          in: productIds,
-        },
-        published: true,
-      },
-    });
-
-    let subtotal = 0;
-
-    const orderItems = items.map((item) => {
-      const productId = Number(item.productId);
-      const quantity = Math.max(1, Number(item.quantity) || 1);
-
-      const product = products.find((entry) => entry.id === productId);
-
-      if (!product) {
-        const error = new Error("One or more products are unavailable");
-        error.status = 400;
-        throw error;
-      }
-
-      if (product.stock < quantity) {
-        const error = new Error(`Not enough stock for ${product.name}`);
-        error.status = 400;
-        throw error;
-      }
-
-      const productPrice =
-        product.salePrice !== null && product.salePrice !== undefined
-          ? Number(product.salePrice)
-          : Number(product.price);
-
-      subtotal += productPrice * quantity;
-
-      return {
-        productId: product.id,
-        quantity,
-        price: productPrice.toFixed(2),
-      };
-    });
-
-    subtotal = Number(subtotal.toFixed(2));
-
-    const normalizedEmail = String(customerEmail).trim().toLowerCase();
-
+    // Step 2: Validate discount code
     let discountResult = null;
 
     if (discountCode && String(discountCode).trim()) {
       discountResult = await validateDiscount({
         code: String(discountCode).trim(),
-        subtotal,
+        subtotal: pricing.subtotal,
         userId: req.user?.id || null,
-        email: normalizedEmail,
+        email: customerEmail,
       });
     }
 
-    const discountAmount = Number(
-      discountResult?.discountAmount || 0
-    );
+    // Step 3: Recalculate with discount
+    const finalPricing = await calculateOrderPricing({
+      items,
+      discountAmount: discountResult?.discountAmount || 0,
+    });
 
-    const total = Number(
-      discountResult?.total !== undefined
-        ? discountResult.total
-        : subtotal
-    );
+    const normalizedEmail = String(customerEmail).trim().toLowerCase();
 
     const order = await prisma.$transaction(async (tx) => {
-      for (const item of orderItems) {
-        const stockUpdate = await tx.product.updateMany({
+      // Reduce stock safely
+      for (const item of finalPricing.items) {
+        const updated = await tx.product.updateMany({
           where: {
             id: item.productId,
             stock: {
@@ -134,7 +69,7 @@ exports.create = async (req, res) => {
           },
         });
 
-        if (stockUpdate.count !== 1) {
+        if (updated.count !== 1) {
           const error = new Error(
             "Stock changed while placing the order. Please refresh your basket."
           );
@@ -143,22 +78,31 @@ exports.create = async (req, res) => {
         }
       }
 
-      const createdOrder = await tx.order.create({
+      // Create order
+      const created = await tx.order.create({
         data: {
           userId: req.user?.id || null,
-          customerName: String(customerName).trim(),
+          customerName,
           customerEmail: normalizedEmail,
-          shippingAddress: String(shippingAddress).trim(),
-          subtotal: subtotal.toFixed(2),
-          discountAmount: discountAmount.toFixed(2),
+          shippingAddress,
+
+          subtotal: finalPricing.subtotal.toFixed(2),
+          discountAmount: finalPricing.discount.toFixed(2),
+          shippingAmount: finalPricing.shipping.toFixed(2),
+          total: finalPricing.total.toFixed(2),
+
           discountCode: discountResult?.code || null,
           discountId: discountResult?.discount?.id || null,
-          total: total.toFixed(2),
 
           orderItems: {
-            create: orderItems,
+            create: finalPricing.items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price.toFixed(2),
+            })),
           },
         },
+
         include: {
           orderItems: {
             include: {
@@ -166,17 +110,10 @@ exports.create = async (req, res) => {
             },
           },
           discount: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              role: true,
-            },
-          },
         },
       });
 
+      // Track discount usage
       if (discountResult?.discount?.id) {
         await tx.discount.update({
           where: {
@@ -194,13 +131,13 @@ exports.create = async (req, res) => {
             discountId: discountResult.discount.id,
             userId: req.user?.id || null,
             email: normalizedEmail,
-            orderId: createdOrder.id,
-            amount: discountAmount.toFixed(2),
+            orderId: created.id,
+            amount: finalPricing.discount.toFixed(2),
           },
         });
       }
 
-      return createdOrder;
+      return created;
     });
 
     return res.status(201).json(formatOrder(order));
@@ -215,18 +152,11 @@ exports.create = async (req, res) => {
 
 exports.myOrders = async (req, res) => {
   try {
-    const userId = Number(req.user?.id);
-
-    if (!userId) {
-      return res.status(401).json({
-        message: "Authentication required",
-      });
-    }
-
     const orders = await prisma.order.findMany({
       where: {
-        userId,
+        userId: req.user.id,
       },
+
       include: {
         orderItems: {
           include: {
@@ -235,17 +165,18 @@ exports.myOrders = async (req, res) => {
         },
         discount: true,
       },
+
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return res.status(200).json(orders.map(formatOrder));
+    res.json(orders.map(formatOrder));
   } catch (error) {
     console.error("myOrders error:", error);
 
-    return res.status(500).json({
-      message: "Unable to load your orders",
+    res.status(500).json({
+      message: "Unable to load orders",
     });
   }
 };
@@ -259,26 +190,20 @@ exports.adminList = async (_req, res) => {
             product: true,
           },
         },
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-          },
-        },
+        user: true,
         discount: true,
       },
+
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return res.status(200).json(orders.map(formatOrder));
+    res.json(orders.map(formatOrder));
   } catch (error) {
-    console.error("adminList orders error:", error);
+    console.error("adminList error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       message: "Unable to load orders",
     });
   }
@@ -286,65 +211,21 @@ exports.adminList = async (_req, res) => {
 
 exports.updateStatus = async (req, res) => {
   try {
-    const orderId = Number(req.params.id);
-    const { status } = req.body;
-
-    if (!Number.isInteger(orderId) || orderId <= 0) {
-      return res.status(400).json({
-        message: "Invalid order ID",
-      });
-    }
-
-    const allowedStatuses = [
-      "PENDING",
-      "PROCESSING",
-      "SHIPPED",
-      "DELIVERED",
-      "CANCELLED",
-    ];
-
-    if (!allowedStatuses.includes(status)) {
-      return res.status(400).json({
-        message: `Status must be one of: ${allowedStatuses.join(", ")}`,
-      });
-    }
-
     const order = await prisma.order.update({
       where: {
-        id: orderId,
+        id: Number(req.params.id),
       },
+
       data: {
-        status,
-      },
-      include: {
-        orderItems: {
-          include: {
-            product: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-          },
-        },
-        discount: true,
+        status: req.body.status,
       },
     });
 
-    return res.status(200).json(formatOrder(order));
+    res.json(order);
   } catch (error) {
     console.error("updateStatus error:", error);
 
-    if (error.code === "P2025") {
-      return res.status(404).json({
-        message: "Order not found",
-      });
-    }
-
-    return res.status(500).json({
+    res.status(500).json({
       message: "Unable to update order status",
     });
   }
