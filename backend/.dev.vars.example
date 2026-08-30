@@ -1,0 +1,11 @@
+# Copy to .dev.vars ONLY if you use local Wrangler development.
+# Never commit .dev.vars.
+
+JWT_SECRET=replace-with-a-development-secret
+
+# Stripe stays disabled for now.
+PAYMENTS_ENABLED=false
+
+# These are only needed later when Stripe is enabled:
+# STRIPE_SECRET_KEY=
+# STRIPE_WEBHOOK_SECRET=

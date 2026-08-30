@@ -1,0 +1,35 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kkcommerce-api",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-08-30",
+  "workers_dev": true,
+
+  "vars": {
+    "NODE_ENV": "production",
+    "PAYMENTS_ENABLED": "false",
+    "FRONTEND_URL": "https://shop.kkcloset.uk",
+    "ADMIN_URL": "https://admin.kkcloset.uk",
+    "FRONTEND_URLS": "https://shop.kkcloset.uk,https://admin.kkcloset.uk",
+    "R2_PUBLIC_URL": "https://images.kkcloset.uk",
+    "R2_BUCKET_NAME": "kkcloset-products"
+  },
+
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "9ced3a87f0d941088359d89fd3f295f2"
+    }
+  ],
+
+  "r2_buckets": [
+    {
+      "binding": "PRODUCT_IMAGES",
+      "bucket_name": "kkcloset-products"
+    }
+  ],
+
+  "observability": {
+    "enabled": true
+  }
+}
