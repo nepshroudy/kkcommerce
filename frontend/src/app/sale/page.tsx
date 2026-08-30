@@ -17,7 +17,12 @@ export default async function SalePage() {
   let products: Product[] = [];
 
   try {
-    const all = await api<Product[]>("/products");\n    products = all.filter((p) => p.salePrice != null && Number(p.salePrice) < Number(p.price));
+    const all = await api<Product[]>("/products");
+    products = all.filter(
+      (p) =>
+        p.salePrice != null &&
+        Number(p.salePrice) < Number(p.price)
+    );
   } catch {
     products = [];
   }
@@ -32,10 +37,12 @@ export default async function SalePage() {
       </section>
 
       {products.length === 0 ? (
-        <div className="empty-state">There are no sale items right now.</div>
+        <div className="empty-state">
+          There are no sale items right now.
+        </div>
       ) : (
         <div className="product-grid kk-merch-grid">
-          {products.map((p, index) => (
+          {products.map((p) => (
             <ProductCard
               key={p.id}
               id={p.id}
@@ -46,7 +53,6 @@ export default async function SalePage() {
               imageUrl={p.imageUrl}
               stock={p.stock}
               featured={p.featured}
-              
             />
           ))}
         </div>
