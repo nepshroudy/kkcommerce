@@ -1,0 +1,329 @@
+/* =========================================================
+   KK CLOSET — FINAL LUXURY LIGHT STOREFRONT
+   ========================================================= */
+
+:root {
+  --lux-bg: #f8f5ef;
+  --lux-bg-soft: #f3eee5;
+  --lux-white: #ffffff;
+
+  --lux-text: #1c1915;
+  --lux-text-soft: #514940;
+  --lux-muted: #756d64;
+
+  --lux-gold: #b89452;
+  --lux-gold-dark: #8e6a2d;
+  --lux-gold-soft: #ede2cb;
+
+  --lux-border: #e4dbcf;
+  --lux-shadow: 0 18px 55px rgba(41, 31, 20, 0.06);
+}
+
+/* ---------- PAGE ---------- */
+
+html,
+body {
+  background: var(--lux-bg);
+  color: var(--lux-text);
+}
+
+body {
+  min-height: 100vh;
+}
+
+main:not(.kk-admin-main) {
+  background: var(--lux-bg);
+  color: var(--lux-text);
+}
+
+main:not(.kk-admin-main) h1,
+main:not(.kk-admin-main) h2,
+main:not(.kk-admin-main) h3,
+main:not(.kk-admin-main) h4,
+main:not(.kk-admin-main) h5,
+main:not(.kk-admin-main) strong,
+main:not(.kk-admin-main) label {
+  color: var(--lux-text);
+}
+
+main:not(.kk-admin-main) p,
+main:not(.kk-admin-main) small {
+  color: var(--lux-muted);
+}
+
+/* ---------- HEADER ---------- */
+
+.kk-header {
+  background: rgba(248, 245, 239, 0.97) !important;
+  border-bottom: 1px solid var(--lux-border) !important;
+  box-shadow: 0 5px 25px rgba(31, 24, 16, 0.025);
+}
+
+.kk-nav a,
+.kk-nav-dropdown-trigger {
+  color: var(--lux-text-soft) !important;
+}
+
+.kk-nav a:hover,
+.kk-nav-dropdown-trigger:hover {
+  color: var(--lux-gold-dark) !important;
+}
+
+.kk-category-menu {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+  border: 1px solid var(--lux-border) !important;
+  box-shadow: var(--lux-shadow) !important;
+}
+
+.icon-btn,
+.cart-btn {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+  border-color: var(--lux-border) !important;
+}
+
+/* ---------- PRODUCT CARDS ---------- */
+
+.product-card {
+  color: var(--lux-text) !important;
+}
+
+.product-card h2,
+.product-card h3,
+.product-card h4,
+.product-name {
+  color: var(--lux-text) !important;
+}
+
+.product-card p {
+  color: var(--lux-muted) !important;
+}
+
+.product-image,
+.product-card-image {
+  background: var(--lux-bg-soft) !important;
+  border-color: var(--lux-border) !important;
+}
+
+.price,
+.product-price,
+.sale-price {
+  color: var(--lux-gold-dark) !important;
+}
+
+/* ---------- CARDS ---------- */
+
+.auth-card,
+.account-card,
+.profile-card,
+.order-card,
+.cart-card,
+.cart-item,
+.cart-summary,
+.order-summary,
+.wishlist-card,
+.panel,
+.surface-card {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+  border-color: var(--lux-border) !important;
+  box-shadow: var(--lux-shadow);
+}
+
+/* ---------- INPUTS ---------- */
+
+main:not(.kk-admin-main) input,
+main:not(.kk-admin-main) textarea,
+main:not(.kk-admin-main) select {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+  border-color: var(--lux-border) !important;
+}
+
+main:not(.kk-admin-main) input:focus,
+main:not(.kk-admin-main) textarea:focus,
+main:not(.kk-admin-main) select:focus {
+  border-color: var(--lux-gold) !important;
+  box-shadow: 0 0 0 3px rgba(184, 148, 82, 0.13) !important;
+}
+
+/* ---------- BUTTONS ---------- */
+
+main:not(.kk-admin-main) .primary-button,
+main:not(.kk-admin-main) .button-primary,
+main:not(.kk-admin-main) .checkout-button,
+main:not(.kk-admin-main) .add-to-cart,
+main:not(.kk-admin-main) .add-to-bag {
+  background: var(--lux-text) !important;
+  color: #ffffff !important;
+  border-color: var(--lux-text) !important;
+}
+
+main:not(.kk-admin-main) .primary-button:hover,
+main:not(.kk-admin-main) .button-primary:hover,
+main:not(.kk-admin-main) .checkout-button:hover,
+main:not(.kk-admin-main) .add-to-cart:hover,
+main:not(.kk-admin-main) .add-to-bag:hover {
+  background: var(--lux-gold-dark) !important;
+  border-color: var(--lux-gold-dark) !important;
+}
+
+main:not(.kk-admin-main) .secondary-button,
+main:not(.kk-admin-main) .button-secondary {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+  border-color: var(--lux-border) !important;
+}
+
+/* ---------- TABLES ---------- */
+
+main:not(.kk-admin-main) table {
+  background: var(--lux-white) !important;
+  color: var(--lux-text) !important;
+}
+
+main:not(.kk-admin-main) th {
+  background: #f3eee7 !important;
+  color: var(--lux-text-soft) !important;
+}
+
+main:not(.kk-admin-main) td {
+  color: var(--lux-text) !important;
+  border-color: var(--lux-border) !important;
+}
+
+/* ---------- FOOTER ---------- */
+
+.kk-site-footer {
+  margin-top: 80px;
+  background: #f2ede5;
+  color: var(--lux-text);
+  border-top: 1px solid var(--lux-border);
+}
+
+.kk-site-footer-inner {
+  width: min(1400px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 52px 0;
+  text-align: center;
+}
+
+.kk-site-footer strong {
+  display: block;
+  color: var(--lux-text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  letter-spacing: 0.2em;
+}
+
+.kk-site-footer p {
+  margin: 12px 0 18px;
+  color: var(--lux-muted);
+}
+
+.kk-site-footer small {
+  color: var(--lux-muted);
+}
+/* =========================================================
+   REMOVE DARK EMPTY STATE BOXES
+   ========================================================= */
+
+.empty-state,
+.kk-empty-state {
+  background: transparent !important;
+  color: var(--lux-muted) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  min-height: 0 !important;
+  padding: 40px 20px !important;
+  text-align: center;
+}
+
+.empty-state p,
+.empty-state span,
+.kk-empty-state p,
+.kk-empty-state span {
+  color: var(--lux-muted) !important;
+}
+
+/* Merchandising pages: New Arrivals / Hot Selling / Sale */
+.kk-merch-page .empty-state {
+  background: transparent !important;
+  color: var(--lux-muted) !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 48px 20px !important;
+}
+
+/* Prevent inherited old dark backgrounds */
+main:not(.kk-admin-main) .empty-state {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+/* Footer legal information */
+
+.kk-footer-legal {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.kk-footer-legal small {
+  color: var(--lux-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.kk-footer-legal small:last-child {
+  font-size: 11px;
+  opacity: 0.85;
+}
+/* =========================================================
+   KK CLOSET — FOOTER LEGAL DETAILS
+   ========================================================= */
+
+.kk-footer-legal {
+  margin-top: 22px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kk-footer-copyright {
+  color: var(--lux-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.kk-footer-company {
+  margin-top: 5px;
+  color: var(--lux-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.kk-footer-designer {
+  margin-top: 8px;
+  color: var(--lux-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.kk-footer-designer a {
+  color: var(--lux-gold-dark);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.kk-footer-designer a:hover {
+  color: var(--lux-gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

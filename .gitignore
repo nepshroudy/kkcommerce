@@ -9,3 +9,29 @@ node_modules
 *.log
 dist
 build
+
+
+# Environment files
+.env
+.env.local
+.env.*.local
+frontend/.env.development.local
+frontend/.env.production
+backend/.env
+backend/.env.*
+
+# Cloudflare / OpenNext generated files
+frontend/.open-next/
+frontend/.wrangler/
+
+# Build output
+frontend/.next/
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Wrangler local state
+.wrangler/
+backend/.wrangler/

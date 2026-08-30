@@ -8,9 +8,9 @@
   "vars": {
     "NODE_ENV": "production",
     "PAYMENTS_ENABLED": "false",
-    "FRONTEND_URL": "https://shop.kkcloset.uk",
+    "FRONTEND_URL": "https://kkcloset.uk",
     "ADMIN_URL": "https://admin.kkcloset.uk",
-    "FRONTEND_URLS": "https://shop.kkcloset.uk,https://admin.kkcloset.uk",
+    "FRONTEND_URLS": "https://kkcloset.uk,https://shop.kkcloset.uk,https://admin.kkcloset.uk",
     "R2_PUBLIC_URL": "https://images.kkcloset.uk",
     "R2_BUCKET_NAME": "kkcloset-products"
   },

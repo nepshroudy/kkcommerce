@@ -1,0 +1,179 @@
+import { withCors } from "./context.mjs";
+
+import { healthRoute } from "./routes/health.mjs";
+
+import {
+  registerRoute,
+  loginRoute,
+  meRoute,
+} from "./routes/auth.mjs";
+
+import {
+  listCategoriesRoute,
+  createCategoryRoute,
+  updateCategoryRoute,
+  deleteCategoryRoute,
+} from "./routes/categories.mjs";
+
+import {
+  listProductsRoute,
+  getProductRoute,
+  adminListProductsRoute,
+  adminGetProductRoute,
+  createProductRoute,
+  updateProductRoute,
+  deleteProductRoute,
+} from "./routes/products.mjs";
+
+import {
+  uploadProductImagesRoute,
+} from "./routes/uploads.mjs";
+
+import {
+  handleCommerceRoutes,
+} from "./routes/commerce.mjs";
+
+function normalizePath(pathname) {
+  if (!pathname || pathname === "/") return "/";
+  return pathname.replace(/\/+$/, "") || "/";
+}
+
+function segments(pathname) {
+  return pathname.split("/").filter(Boolean);
+}
+
+export async function routeRequest(request, context) {
+  const url = new URL(request.url);
+  const pathname = normalizePath(url.pathname);
+  const method = request.method.toUpperCase();
+  const parts = segments(pathname);
+
+  if (method === "OPTIONS") {
+    return withCors(
+      new Response(null, { status: 204 }),
+      request,
+      context.env
+    );
+  }
+
+  let response;
+
+  if (method === "GET" && pathname === "/") {
+    response = Response.json({
+      message: "KKCommerce API is running",
+      runtime: "cloudflare-workers",
+    });
+  } else if (
+    method === "GET" &&
+    pathname === "/api/health"
+  ) {
+    response = await healthRoute(request, context);
+
+  } else if (
+    method === "POST" &&
+    pathname === "/api/auth/register"
+  ) {
+    response = await registerRoute(request, context);
+  } else if (
+    method === "POST" &&
+    pathname === "/api/auth/login"
+  ) {
+    response = await loginRoute(request, context);
+  } else if (
+    method === "GET" &&
+    pathname === "/api/auth/me"
+  ) {
+    response = await meRoute(request, context);
+
+  } else if (
+    method === "GET" &&
+    pathname === "/api/categories"
+  ) {
+    response = await listCategoriesRoute(request, context);
+  } else if (
+    method === "POST" &&
+    pathname === "/api/categories"
+  ) {
+    response = await createCategoryRoute(request, context);
+  } else if (
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "categories" &&
+    method === "PUT"
+  ) {
+    response = await updateCategoryRoute(request, context, parts[2]);
+  } else if (
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "categories" &&
+    method === "DELETE"
+  ) {
+    response = await deleteCategoryRoute(request, context, parts[2]);
+
+  } else if (
+    method === "POST" &&
+    pathname === "/api/uploads/products"
+  ) {
+    response = await uploadProductImagesRoute(request, context);
+
+  } else if (
+    method === "GET" &&
+    pathname === "/api/products/admin"
+  ) {
+    response = await adminListProductsRoute(request, context);
+  } else if (
+    method === "GET" &&
+    parts.length === 4 &&
+    parts[0] === "api" &&
+    parts[1] === "products" &&
+    parts[2] === "admin"
+  ) {
+    response = await adminGetProductRoute(request, context, parts[3]);
+  } else if (
+    method === "GET" &&
+    pathname === "/api/products"
+  ) {
+    response = await listProductsRoute(request, context);
+  } else if (
+    method === "POST" &&
+    pathname === "/api/products"
+  ) {
+    response = await createProductRoute(request, context);
+  } else if (
+    method === "PUT" &&
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "products"
+  ) {
+    response = await updateProductRoute(request, context, parts[2]);
+  } else if (
+    method === "DELETE" &&
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "products"
+  ) {
+    response = await deleteProductRoute(request, context, parts[2]);
+  } else if (
+    method === "GET" &&
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "products"
+  ) {
+    response = await getProductRoute(
+      request,
+      context,
+      decodeURIComponent(parts[2])
+    );
+  } else {
+    response = await handleCommerceRoutes(request, context);
+
+    if (!response) {
+      response = Response.json(
+        { message: `Route not found: ${method} ${pathname}` },
+        { status: 404 }
+      );
+    }
+  }
+
+  return withCors(response, request, context.env);
+}

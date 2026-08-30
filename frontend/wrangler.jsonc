@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "kkcommerce-frontend",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-30",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "routes": [
+    {
+      "pattern": "kkcloset.uk",
+      "custom_domain": true
+    },
+    {
+      "pattern": "shop.kkcloset.uk",
+      "custom_domain": true
+    },
+    {
+      "pattern": "admin.kkcloset.uk",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

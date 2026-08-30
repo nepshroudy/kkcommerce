@@ -128,7 +128,13 @@ export default function AdminPage() {
           <p className="kk-admin-section-label">KK CLOSET</p>
           <h2>Contemporary fashion, managed beautifully.</h2>
         </div>
-        <Link href="/shop">View storefront <span>↗</span></Link>
+        <a
+  href="https://kkcloset.uk"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  Visit storefront <span>↗</span>
+</a>
       </section>
     </div>
   );
