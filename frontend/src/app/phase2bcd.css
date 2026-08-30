@@ -1,0 +1,136 @@
+.variant-builder{margin:28px 0;padding:22px;border:1px solid rgba(128,128,128,.25);border-radius:16px;background:rgba(128,128,128,.04)}
+.variant-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}.variant-title h3{font-size:1.25rem;margin:2px 0}.variant-input-columns{display:grid;grid-template-columns:1fr 1fr;gap:22px}.tag-list{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.tag-list button,.variant-choice{border:1px solid rgba(128,128,128,.35);background:transparent;border-radius:999px;padding:8px 12px}.inline-add{display:flex;gap:8px}.inline-add input{flex:1}.bulk-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0}.bulk-bar input{width:90px}.variant-table-wrap{overflow:auto}.variant-table{width:100%;border-collapse:collapse;min-width:900px}.variant-table th,.variant-table td{text-align:left;border-top:1px solid rgba(128,128,128,.2);padding:10px 8px}.variant-table input:not([type=checkbox]),.variant-table select{width:100%;min-width:105px}.admin-image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px;margin-top:16px}.admin-image-card{border:1px solid rgba(128,128,128,.3);border-radius:12px;overflow:hidden}.admin-image-card.main{outline:2px solid currentColor}.admin-image-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}.admin-image-card>div{display:flex;justify-content:space-between;gap:5px;padding:8px}.upload-button{cursor:pointer;padding:10px 14px;border:1px solid rgba(128,128,128,.4);border-radius:8px}.variant-panel{margin:22px 0}.variant-group{margin:18px 0}.variant-options{display:flex;gap:8px;flex-wrap:wrap}.variant-choice.active{background:currentColor}.variant-choice.active{filter:invert(0)}.variant-choice:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}.variant-add{width:100%;margin-top:10px}.checkout-layout{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:32px}.checkout-form{display:grid;gap:16px}.checkout-form label{display:grid;gap:7px}.checkout-form input,.checkout-form textarea{width:100%}.checkout-line{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid rgba(128,128,128,.2)}.checkout-line span{display:grid}.checkout-line small{opacity:.7;margin-top:3px}.checkout-total{font-size:1.15rem;padding-top:12px}.checkout-success{text-align:center;padding:60px 20px}.collection-card.simple{display:block;text-decoration:none}.collection-image{height:320px;background-size:cover;background-position:center;border-radius:12px;margin-bottom:12px}
+@media(max-width:800px){.variant-input-columns,.checkout-layout{grid-template-columns:1fr}.variant-title{align-items:flex-start;flex-direction:column}.admin-image-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* =========================================================
+   KK CLOSET — Phase 2BCD Variant Generator UI Contrast Fix
+   UI-only: no product, variant, cart, checkout or API logic.
+   ========================================================= */
+
+/* Give the admin variant panels a clean, readable light surface. */
+.variant-builder {
+  background: #ffffff;
+  border-color: #ded8d1;
+  color: #171310;
+  box-shadow: 0 10px 30px rgba(23, 19, 16, 0.035);
+}
+
+.variant-builder strong,
+.variant-builder h3 {
+  color: #171310;
+}
+
+/* Keep the gold KK Closet eyebrow readable. */
+.variant-builder .eyebrow {
+  color: #c79200;
+}
+
+/* Default size/colour chips: dark text on white, not white on white. */
+.variant-builder .tag-list button {
+  appearance: none;
+  background: #ffffff;
+  color: #28211c;
+  border: 1px solid #cfc7bf;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(23, 19, 16, 0.04);
+  transition: background-color .16s ease, color .16s ease, border-color .16s ease, transform .16s ease;
+}
+
+.variant-builder .tag-list button:hover,
+.variant-builder .tag-list button:focus-visible {
+  background: #171310;
+  color: #ffffff;
+  border-color: #171310;
+  outline: none;
+}
+
+.variant-builder .tag-list button:active {
+  transform: translateY(1px);
+}
+
+/* Main admin actions keep the premium black treatment. */
+.variant-builder .variant-title > button,
+.variant-builder .inline-add > button,
+.variant-builder .bulk-bar > button {
+  background: #171310;
+  color: #ffffff;
+  border: 1px solid #171310;
+  border-radius: 9px;
+  font-weight: 600;
+}
+
+.variant-builder .variant-title > button:hover,
+.variant-builder .inline-add > button:hover,
+.variant-builder .bulk-bar > button:hover {
+  background: #302821;
+  border-color: #302821;
+}
+
+/* Inputs stay bright, with dark text and a visible focus ring. */
+.variant-builder input:not([type="checkbox"]),
+.variant-builder select,
+.variant-builder textarea {
+  background: #ffffff;
+  color: #171310;
+  border-color: #d7cec5;
+}
+
+.variant-builder input:not([type="checkbox"])::placeholder,
+.variant-builder textarea::placeholder {
+  color: #9c96a6;
+  opacity: 1;
+}
+
+.variant-builder input:not([type="checkbox"]):focus,
+.variant-builder select:focus,
+.variant-builder textarea:focus {
+  border-color: #b88a09;
+  outline: 2px solid rgba(184, 138, 9, 0.18);
+  outline-offset: 1px;
+}
+
+/* Disabled variant pricing fields should still be legible. */
+.variant-builder input:disabled,
+.variant-builder select:disabled {
+  background: #f3f0ec;
+  color: #736b64;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Improve generated variant table readability. */
+.variant-table th {
+  color: #4a413a;
+  font-size: .78rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: #faf8f5;
+}
+
+.variant-table td {
+  color: #241f1b;
+}
+
+.variant-table tbody tr:hover {
+  background: #fcfaf7;
+}
+
+/* Small-screen spacing so the controls remain easy to tap. */
+@media (max-width: 800px) {
+  .variant-builder {
+    padding: 18px;
+  }
+
+  .variant-builder .tag-list button {
+    min-height: 42px;
+    padding-inline: 15px;
+  }
+
+  .variant-builder .inline-add {
+    align-items: stretch;
+  }
+}

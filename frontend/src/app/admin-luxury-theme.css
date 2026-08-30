@@ -1,0 +1,688 @@
+
+/* =========================================================
+   KK CLOSET — LUXURY LIGHT ADMIN THEME
+   Frontend-only visual layer
+   ========================================================= */
+
+:root {
+  --kk-ivory: #f8f5ef;
+  --kk-ivory-deep: #f1ebe1;
+  --kk-white: #ffffff;
+  --kk-ink: #1c1915;
+  --kk-ink-soft: #403a33;
+  --kk-muted: #786f65;
+  --kk-gold: #b89452;
+  --kk-gold-dark: #8e6c31;
+  --kk-gold-soft: #ede2cb;
+  --kk-line: #e3dbcf;
+  --kk-success: #365b45;
+  --kk-danger: #9b342b;
+}
+
+.kk-admin-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 268px minmax(0, 1fr);
+  background: var(--kk-ivory);
+  color: var(--kk-ink);
+}
+
+.kk-admin-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(248,245,239,.98));
+  color: var(--kk-ink);
+  padding: 26px 18px 22px;
+  border-right: 1px solid var(--kk-line);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 8px 0 40px rgba(52, 41, 29, .025);
+}
+
+.kk-admin-brand-wrap {
+  padding: 4px 8px 20px;
+  border-bottom: 1px solid var(--kk-line);
+}
+
+.kk-admin-brand {
+  display: flex !important;
+  align-items: center;
+  gap: 13px;
+  color: var(--kk-ink) !important;
+  letter-spacing: normal !important;
+  font-size: inherit !important;
+}
+
+.kk-admin-monogram {
+  width: 47px;
+  height: 47px;
+  border-radius: 50%;
+  display: grid !important;
+  place-items: center;
+  border: 1px solid var(--kk-gold);
+  background: var(--kk-white);
+  color: var(--kk-ink) !important;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 17px !important;
+  letter-spacing: .05em !important;
+  box-shadow: inset 0 0 0 4px var(--kk-ivory);
+}
+
+.kk-admin-brand-copy {
+  display: grid !important;
+  gap: 1px;
+  color: var(--kk-ink) !important;
+}
+
+.kk-admin-brand-copy strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  letter-spacing: .16em;
+}
+
+.kk-admin-brand-copy small {
+  color: var(--kk-gold-dark);
+  font-size: 9px;
+  letter-spacing: .2em;
+  font-weight: 700;
+}
+
+.kk-admin-nav-label {
+  padding: 0 12px;
+  color: #9b9184;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+
+.kk-admin-sidebar nav {
+  display: grid;
+  gap: 5px;
+}
+
+.kk-admin-sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 11px;
+  border-radius: 10px;
+  color: #5d554c !important;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all .18s ease;
+}
+
+.kk-admin-sidebar nav a:hover {
+  background: #f3ede3 !important;
+  color: var(--kk-ink) !important;
+}
+
+.kk-admin-sidebar nav a.active {
+  background: var(--kk-gold-soft) !important;
+  color: var(--kk-ink) !important;
+  box-shadow: inset 3px 0 0 var(--kk-gold);
+}
+
+.kk-admin-nav-icon {
+  width: 29px;
+  height: 29px;
+  border: 1px solid #ded4c5;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  color: var(--kk-gold-dark);
+  background: rgba(255,255,255,.72);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+
+.kk-admin-sidebar nav a.active .kk-admin-nav-icon {
+  background: var(--kk-white);
+  border-color: #d7c39a;
+}
+
+.kk-admin-sidebar-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--kk-line);
+  display: grid;
+  gap: 13px;
+}
+
+.kk-admin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kk-admin-user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--kk-ink);
+  color: white;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.kk-admin-user div {
+  display: grid;
+  gap: 1px;
+}
+
+.kk-admin-user strong {
+  font-size: 12px;
+  color: var(--kk-ink);
+}
+
+.kk-admin-user small {
+  color: var(--kk-muted);
+  font-size: 10px;
+}
+
+.kk-admin-sidebar-footer > button {
+  width: 100%;
+  border: 1px solid var(--kk-line) !important;
+  background: var(--kk-white) !important;
+  color: var(--kk-ink) !important;
+  padding: 10px 12px !important;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.kk-admin-sidebar-footer > button:hover {
+  border-color: var(--kk-gold) !important;
+}
+
+.kk-admin-main {
+  background: var(--kk-ivory);
+  color: var(--kk-ink);
+  padding: 44px clamp(24px, 4vw, 58px) 60px;
+  min-width: 0;
+}
+
+.kk-admin-loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: var(--kk-ivory);
+  color: var(--kk-ink);
+}
+
+.kk-admin-dashboard {
+  max-width: 1450px;
+  margin: 0 auto;
+}
+
+.kk-admin-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 34px;
+}
+
+.kk-admin-kicker,
+.kk-admin-section-label {
+  color: var(--kk-gold-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  margin: 0 0 9px;
+}
+
+.kk-admin-hero h1 {
+  margin: 0;
+  color: var(--kk-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(40px, 5vw, 64px);
+  letter-spacing: -.035em;
+}
+
+.kk-admin-intro {
+  margin: 11px 0 0;
+  color: var(--kk-muted);
+  max-width: 650px;
+  font-size: 15px;
+}
+
+.kk-admin-hero-badge {
+  border: 1px solid #dcd4c8;
+  background: rgba(255,255,255,.8);
+  padding: 10px 14px;
+  border-radius: 999px;
+  color: #5b5349;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.kk-admin-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #557460;
+  box-shadow: 0 0 0 4px #e7eee9;
+}
+
+.kk-admin-error {
+  padding: 13px 15px;
+  background: #fff0ee;
+  color: var(--kk-danger);
+  border: 1px solid #edd2ce;
+  border-radius: 12px;
+  margin-bottom: 18px;
+}
+
+.kk-admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.kk-admin-metric-card {
+  background: var(--kk-white);
+  border: 1px solid var(--kk-line);
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 176px;
+  color: var(--kk-ink);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 14px 45px rgba(60, 45, 28, .045);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.kk-admin-metric-card:hover {
+  transform: translateY(-2px);
+  border-color: #d6c6a8;
+  box-shadow: 0 20px 55px rgba(60, 45, 28, .08);
+}
+
+.kk-admin-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 23px;
+}
+
+.kk-admin-card-index {
+  color: var(--kk-gold-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.kk-admin-card-arrow {
+  color: #978c7e;
+  font-size: 15px;
+}
+
+.kk-admin-metric-card p {
+  margin: 0 0 4px;
+  color: #696055;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kk-admin-metric-card strong {
+  display: block;
+  color: var(--kk-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.kk-admin-metric-card small {
+  margin-top: auto;
+  color: #9a9083;
+  font-size: 11px;
+}
+
+.kk-admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.kk-admin-feature-card {
+  min-height: 245px;
+  background: var(--kk-white);
+  border: 1px solid var(--kk-line);
+  border-radius: 20px;
+  padding: 27px;
+  box-shadow: 0 14px 45px rgba(60,45,28,.04);
+}
+
+.kk-admin-revenue-card {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 24px;
+  background:
+    radial-gradient(circle at 92% 15%, rgba(184,148,82,.14), transparent 27%),
+    var(--kk-white);
+}
+
+.kk-admin-revenue-card h2 {
+  margin: 11px 0 9px;
+  font-family: Georgia, "Times New Roman", serif;
+  color: var(--kk-ink);
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 500;
+}
+
+.kk-admin-card-copy {
+  color: var(--kk-muted);
+  max-width: 530px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.kk-admin-revenue-mark {
+  align-self: center;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  border: 1px solid #d9c596;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 9px #f9f5ed;
+  color: var(--kk-gold-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 31px;
+  letter-spacing: .05em;
+}
+
+.kk-admin-quick-links {
+  display: grid;
+  margin-top: 11px;
+}
+
+.kk-admin-quick-links a {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid #eee8df;
+  color: var(--kk-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kk-admin-quick-links a:last-child {
+  border-bottom: 0;
+}
+
+.kk-admin-quick-links a span {
+  color: var(--kk-gold-dark);
+}
+
+.kk-admin-bottom-banner {
+  margin-top: 18px;
+  border: 1px solid #d9c69f;
+  border-radius: 20px;
+  padding: 24px 27px;
+  background:
+    linear-gradient(110deg, #f2e8d6, #fbf8f2 62%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.kk-admin-bottom-banner h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  margin: 0;
+  color: var(--kk-ink);
+  font-size: clamp(22px, 3vw, 32px);
+}
+
+.kk-admin-bottom-banner a {
+  white-space: nowrap;
+  background: var(--kk-ink);
+  color: white;
+  padding: 11px 15px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.kk-admin-bottom-banner a span {
+  margin-left: 9px;
+  color: #d8b56d;
+}
+
+/* ---------------------------------------------------------
+   Apply luxury light styling to ALL existing admin pages
+   --------------------------------------------------------- */
+
+.kk-admin-main .admin-page-heading,
+.kk-admin-main .page-heading {
+  margin-bottom: 26px;
+}
+
+.kk-admin-main .admin-page-heading h1,
+.kk-admin-main .page-heading h1 {
+  color: var(--kk-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  font-size: clamp(30px, 4vw, 44px);
+  letter-spacing: -.025em;
+}
+
+.kk-admin-main .eyebrow {
+  color: var(--kk-gold-dark) !important;
+}
+
+.kk-admin-main .admin-card,
+.kk-admin-main .admin-form,
+.kk-admin-main .inline-form,
+.kk-admin-main .table-wrap,
+.kk-admin-main .shipping-admin-card,
+.kk-admin-main .variant-builder {
+  background: var(--kk-white) !important;
+  color: var(--kk-ink) !important;
+  border: 1px solid var(--kk-line) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 12px 38px rgba(60,45,28,.035) !important;
+}
+
+.kk-admin-main .admin-form {
+  max-width: 980px;
+  padding: 27px;
+}
+
+.kk-admin-main table {
+  color: var(--kk-ink);
+}
+
+.kk-admin-main th {
+  background: #fbf8f3;
+  color: #756a5d;
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+.kk-admin-main th,
+.kk-admin-main td {
+  border-color: #eee7de;
+}
+
+.kk-admin-main td {
+  color: #3f3932;
+}
+
+.kk-admin-main input,
+.kk-admin-main textarea,
+.kk-admin-main select {
+  background: var(--kk-white) !important;
+  color: var(--kk-ink) !important;
+  border: 1px solid #d9d0c4 !important;
+  border-radius: 9px !important;
+}
+
+.kk-admin-main input:focus,
+.kk-admin-main textarea:focus,
+.kk-admin-main select:focus {
+  outline: none !important;
+  border-color: var(--kk-gold) !important;
+  box-shadow: 0 0 0 3px rgba(184,148,82,.12) !important;
+}
+
+.kk-admin-main button,
+.kk-admin-main .button-link,
+.kk-admin-main .primary-button {
+  background: var(--kk-ink) !important;
+  color: #fff !important;
+  border: 1px solid var(--kk-ink) !important;
+  border-radius: 9px !important;
+}
+
+.kk-admin-main .button-secondary,
+.kk-admin-main button.button-secondary {
+  background: var(--kk-white) !important;
+  color: var(--kk-ink) !important;
+  border: 1px solid #d8cdbf !important;
+}
+
+.kk-admin-main button:hover,
+.kk-admin-main .button-link:hover {
+  opacity: .92;
+}
+
+.kk-admin-main .table-actions a,
+.kk-admin-main .table-actions button,
+.kk-admin-main .text-button {
+  color: var(--kk-gold-dark) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.kk-admin-main .status-pill {
+  background: #f1eadf;
+  color: #5a5147;
+  border: 1px solid #e0d6c8;
+}
+
+.kk-admin-main .status-active,
+.kk-admin-main .success-box,
+.kk-admin-main .form-success {
+  background: #eef4ef !important;
+  color: var(--kk-success) !important;
+  border-color: #d2e1d4 !important;
+}
+
+.kk-admin-main .form-error,
+.kk-admin-main .error-message {
+  background: #fff0ee !important;
+  color: var(--kk-danger) !important;
+  border: 1px solid #eed1cc !important;
+}
+
+@media (max-width: 1100px) {
+  .kk-admin-metrics {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .kk-admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .kk-admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .kk-admin-sidebar {
+    position: static;
+    height: auto;
+    padding: 16px;
+  }
+
+  .kk-admin-brand-wrap {
+    border-bottom: 0;
+    padding-bottom: 5px;
+  }
+
+  .kk-admin-nav-label {
+    display: none;
+  }
+
+  .kk-admin-sidebar nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    overflow-x: auto;
+    padding-bottom: 3px;
+  }
+
+  .kk-admin-sidebar nav a {
+    min-width: 112px;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    text-align: center;
+  }
+
+  .kk-admin-sidebar-footer {
+    margin-top: 5px;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .kk-admin-sidebar-footer > button {
+    width: auto;
+  }
+
+  .kk-admin-main {
+    padding: 28px 18px 45px;
+  }
+}
+
+@media (max-width: 600px) {
+  .kk-admin-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .kk-admin-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .kk-admin-metric-card {
+    min-height: 150px;
+  }
+
+  .kk-admin-revenue-card {
+    flex-direction: column;
+  }
+
+  .kk-admin-revenue-mark {
+    width: 84px;
+    height: 84px;
+    align-self: flex-start;
+    font-size: 23px;
+  }
+
+  .kk-admin-bottom-banner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .kk-admin-sidebar nav {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}

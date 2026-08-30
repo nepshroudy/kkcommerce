@@ -1,82 +1,38 @@
-"use client";
+'use client';
 
-import { FormEvent, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { api } from "@/lib/api";
+import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
 
-type Category = { id: number; name: string };
-type Product = {
-  id?: number; name: string; description: string; price: string | number; salePrice?: string | number | null;
-  sku?: string | null; stock: number; featured: boolean; published: boolean; imageUrl?: string | null;
-  categoryId?: number | null; images?: { url: string }[];
-};
+type Category={id:number;name:string};
+type Variant={id?:number;size:string;colour:string;sku:string;stock:number;useProductPricing:boolean;price:string;salePrice:string;active:boolean};
+type Product={id?:number;name:string;description:string;price:string|number;salePrice?:string|number|null;sku?:string|null;stock:number;featured:boolean;published:boolean;imageUrl?:string|null;categoryId?:number|null;images?:{id?:number;url:string}[];variants?:Variant[]};
+type ImageItem={id:string;url:string;file?:File;isMain:boolean};
+const blank:Product={name:'',description:'',price:'',salePrice:'',sku:'',stock:0,featured:false,published:true,imageUrl:'',categoryId:null,images:[],variants:[]};
+const DEFAULT_SIZES=['XS','S','M','L','XL','XXL'];
+const cleanCode=(value:string)=>value.trim().toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-|-$/g,'');
 
-const blank: Product = { name: "", description: "", price: "", salePrice: "", sku: "", stock: 0, featured: false, published: true, imageUrl: "", categoryId: null, images: [] };
-
-export default function ProductForm({ productId }: { productId?: number }) {
-  const router = useRouter();
-  const [form, setForm] = useState<Product>(blank);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [imageLines, setImageLines] = useState("");
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    api<Category[]>("/categories").then(setCategories).catch((e) => setError(e.message));
-    if (productId) {
-      api<Product>(`/products/admin/${productId}`, { authenticated: true })
-        .then((product) => {
-          setForm(product);
-          setImageLines((product.images || []).map((image) => image.url).join("\n"));
-        })
-        .catch((e) => setError(e.message));
-    }
-  }, [productId]);
-
-  const update = (key: keyof Product, value: unknown) => setForm((current) => ({ ...current, [key]: value }));
-
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    setError("");
-    setSaving(true);
-    try {
-      const body = {
-        ...form,
-        images: imageLines.split(/\r?\n/).map((line) => line.trim()).filter(Boolean),
-      };
-      await api(productId ? `/products/${productId}` : "/products", {
-        method: productId ? "PUT" : "POST",
-        authenticated: true,
-        body: JSON.stringify(body),
-      });
-      router.push("/admin/products");
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not save product");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <form className="admin-form" onSubmit={submit}>
-      {error && <p className="form-error">{error}</p>}
-      <div className="form-grid">
-        <label>Name<input required value={form.name} onChange={(e) => update("name", e.target.value)} /></label>
-        <label>SKU<input value={form.sku || ""} onChange={(e) => update("sku", e.target.value)} /></label>
-        <label>Price (£)<input required min="0" step="0.01" type="number" value={form.price} onChange={(e) => update("price", e.target.value)} /></label>
-        <label>Sale price (£)<input min="0" step="0.01" type="number" value={form.salePrice || ""} onChange={(e) => update("salePrice", e.target.value)} /></label>
-        <label>Stock<input min="0" type="number" value={form.stock} onChange={(e) => update("stock", Number(e.target.value))} /></label>
-        <label>Category<select value={form.categoryId || ""} onChange={(e) => update("categoryId", e.target.value ? Number(e.target.value) : null)}><option value="">Uncategorised</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
-      </div>
-      <label>Description<textarea required rows={6} value={form.description} onChange={(e) => update("description", e.target.value)} /></label>
-      <label>Main image URL<input value={form.imageUrl || ""} onChange={(e) => update("imageUrl", e.target.value)} placeholder="https://..." /></label>
-      <label>Additional image URLs (one per line)<textarea rows={5} value={imageLines} onChange={(e) => setImageLines(e.target.value)} placeholder="https://..." /></label>
-      <div className="check-row">
-        <label><input type="checkbox" checked={form.featured} onChange={(e) => update("featured", e.target.checked)} /> Featured</label>
-        <label><input type="checkbox" checked={form.published} onChange={(e) => update("published", e.target.checked)} /> Published</label>
-      </div>
-      <div className="form-actions"><button className="button-secondary" type="button" onClick={() => router.back()}>Cancel</button><button disabled={saving} type="submit">{saving ? "Saving..." : "Save product"}</button></div>
-    </form>
-  );
+export default function ProductForm({productId}:{productId?:number}){
+ const router=useRouter(); const [form,setForm]=useState<Product>(blank); const [categories,setCategories]=useState<Category[]>([]);
+ const [images,setImages]=useState<ImageItem[]>([]); const [colours,setColours]=useState<string[]>([]); const [sizes,setSizes]=useState<string[]>(DEFAULT_SIZES);
+ const [colourInput,setColourInput]=useState(''); const [sizeInput,setSizeInput]=useState(''); const [variants,setVariants]=useState<Variant[]>([]);
+ const [bulkStock,setBulkStock]=useState(''); const [error,setError]=useState(''); const [saving,setSaving]=useState(false);
+ useEffect(()=>{api<Category[]>('/categories').then(setCategories).catch(e=>setError(e.message));if(productId){api<Product>(`/products/admin/${productId}`,{authenticated:true}).then(p=>{setForm(p);const existing=[...(p.imageUrl?[{id:'main',url:p.imageUrl,isMain:true}]:[]),...(p.images||[]).filter(i=>i.url!==p.imageUrl).map((i,n)=>({id:`existing-${i.id||n}`,url:i.url,isMain:false}))];setImages(existing);setVariants((p.variants||[]).map(v=>({...v,price:v.price==null?'':String(v.price),salePrice:v.salePrice==null?'':String(v.salePrice)})));const vs=p.variants||[];if(vs.length){setColours(Array.from(new Set(vs.map(v=>v.colour))));setSizes(Array.from(new Set(vs.map(v=>v.size))))}}).catch(e=>setError(e.message))}},[productId]);
+ const update=(key:keyof Product,value:unknown)=>setForm(c=>({...c,[key]:value}));
+ const totalStock=useMemo(()=>variants.filter(v=>v.active).reduce((sum,v)=>sum+(Number(v.stock)||0),0),[variants]);
+ function addColour(){const v=colourInput.trim();if(v&&!colours.some(c=>c.toLowerCase()===v.toLowerCase()))setColours(c=>[...c,v]);setColourInput('')}
+ function addSize(){const v=sizeInput.trim().toUpperCase();if(v&&!sizes.includes(v))setSizes(s=>[...s,v]);setSizeInput('')}
+ function generateVariants(){if(!colours.length||!sizes.length){setError('Add at least one colour and one size first.');return}const existing=new Map(variants.map(v=>[`${v.colour.toLowerCase()}::${v.size.toLowerCase()}`,v]));const base=cleanCode(String(form.sku||form.name||'KK'));setVariants(colours.flatMap(colour=>sizes.map(size=>existing.get(`${colour.toLowerCase()}::${size.toLowerCase()}`)||{colour,size,sku:`${base}-${cleanCode(colour)}-${cleanCode(size)}`,stock:0,useProductPricing:true,price:'',salePrice:'',active:true})));setError('')}
+ function patchVariant(index:number,patch:Partial<Variant>){setVariants(v=>v.map((item,i)=>i===index?{...item,...patch}:item))}
+ function addFiles(list:FileList|null){if(!list)return;const chosen=Array.from(list);const allowed=['image/jpeg','image/png','image/webp'];const valid=chosen.filter(f=>allowed.includes(f.type)&&f.size<=10*1024*1024);if(images.length+valid.length>10){setError('Maximum 10 product images.');return}if(valid.length!==chosen.length)setError('Only JPG, PNG or WebP up to 10 MB each are accepted.');setImages(current=>[...current,...valid.map((file,n)=>({id:`new-${Date.now()}-${n}`,file,url:URL.createObjectURL(file),isMain:current.length===0&&n===0}))])}
+ function removeImage(id:string){setImages(current=>{const item=current.find(i=>i.id===id);if(item?.file)URL.revokeObjectURL(item.url);const next=current.filter(i=>i.id!==id);if(item?.isMain&&next[0])next[0]={...next[0],isMain:true};return next})}
+ async function submit(e:FormEvent){e.preventDefault();setError('');setSaving(true);try{let resolved=images.map(i=>({...i}));const fresh=resolved.filter(i=>i.file);if(fresh.length){const fd=new FormData();fresh.forEach(i=>fd.append('images',i.file!));const result=await api<{images:{url:string}[]}>('/uploads/products',{method:'POST',authenticated:true,body:fd});let cursor=0;resolved=resolved.map(i=>i.file?{...i,file:undefined,url:result.images[cursor++].url}:i)}const main=resolved.find(i=>i.isMain)?.url||resolved[0]?.url||'';const additional=resolved.map(i=>i.url).filter(url=>url&&url!==main);await api(productId?`/products/${productId}`:'/products',{method:productId?'PUT':'POST',authenticated:true,body:JSON.stringify({...form,imageUrl:main,images:additional,stock:variants.length?totalStock:form.stock,variants})});resolved.forEach(i=>{if(i.file)URL.revokeObjectURL(i.url)});router.push('/admin/products');router.refresh()}catch(err){setError(err instanceof Error?err.message:'Could not save product')}finally{setSaving(false)}}
+ return <form className="admin-form" onSubmit={submit}>{error&&<p className="form-error">{error}</p>}
+  <div className="form-grid"><label>Name<input required value={form.name} onChange={e=>update('name',e.target.value)}/></label><label>Base SKU<input value={form.sku||''} onChange={e=>update('sku',e.target.value)} placeholder="e.g. KK-DRS-001"/></label><label>Product price (£)<input required min="0" step="0.01" type="number" value={form.price} onChange={e=>update('price',e.target.value)}/></label><label>Product sale price (£)<input min="0" step="0.01" type="number" value={form.salePrice||''} onChange={e=>update('salePrice',e.target.value)}/></label><label>Category<select value={form.categoryId||''} onChange={e=>update('categoryId',e.target.value?Number(e.target.value):null)}><option value="">Uncategorised</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label>{variants.length===0?<label>Stock<input min="0" type="number" value={form.stock} onChange={e=>update('stock',Number(e.target.value))}/></label>:<label>Total variant stock<input disabled value={totalStock}/></label>}</div>
+  <label>Description<textarea required rows={6} value={form.description} onChange={e=>update('description',e.target.value)}/></label>
+  <section className="variant-builder"><div className="variant-title"><div><p className="eyebrow">PRODUCT IMAGES</p><h3>Gallery</h3></div><label className="upload-button">+ Add images<input hidden type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={e=>addFiles(e.target.files)}/></label></div><p>Up to 10 JPG, PNG or WebP images. Click “Set main” to choose the storefront image.</p><div className="admin-image-grid">{images.map(i=><div className={i.isMain?'admin-image-card main':'admin-image-card'} key={i.id}><img src={i.url} alt="Product preview"/><div><button type="button" onClick={()=>setImages(all=>all.map(x=>({...x,isMain:x.id===i.id})))}>{i.isMain?'★ Main image':'Set main'}</button><button type="button" onClick={()=>removeImage(i.id)}>Remove</button></div></div>)}</div></section>
+  <section className="variant-builder"><div className="variant-title"><div><p className="eyebrow">SIZE + COLOUR</p><h3>Variant generator</h3></div><button type="button" onClick={generateVariants}>Generate variants</button></div><div className="variant-input-columns"><div><strong>Colours</strong><div className="tag-list">{colours.map(c=><button type="button" key={c} onClick={()=>setColours(v=>v.filter(x=>x!==c))}>{c} ×</button>)}</div><div className="inline-add"><input value={colourInput} onChange={e=>setColourInput(e.target.value)} placeholder="Black, Cream..."/><button type="button" onClick={addColour}>Add colour</button></div></div><div><strong>Sizes</strong><div className="tag-list">{sizes.map(s=><button type="button" key={s} onClick={()=>setSizes(v=>v.filter(x=>x!==s))}>{s} ×</button>)}</div><div className="inline-add"><input value={sizeInput} onChange={e=>setSizeInput(e.target.value)} placeholder="Custom size"/><button type="button" onClick={addSize}>Add size</button></div></div></div>
+  {variants.length>0&&<><div className="bulk-bar"><strong>{variants.length} variants</strong><label>Set stock for all <input type="number" min="0" value={bulkStock} onChange={e=>setBulkStock(e.target.value)}/></label><button type="button" onClick={()=>setVariants(v=>v.map(x=>({...x,stock:Math.max(0,Number(bulkStock)||0)})))}>Apply</button><button type="button" onClick={()=>setVariants(v=>v.map(x=>({...x,useProductPricing:true,price:'',salePrice:''})))}>Use product pricing for all</button></div><div className="variant-table-wrap"><table className="variant-table"><thead><tr><th>Variant</th><th>SKU</th><th>Stock</th><th>Pricing</th><th>Regular</th><th>Sale</th><th>Active</th></tr></thead><tbody>{variants.map((v,i)=><tr key={`${v.colour}-${v.size}`}><td><strong>{v.colour}</strong><br/>{v.size}</td><td><input value={v.sku} onChange={e=>patchVariant(i,{sku:e.target.value})}/></td><td><input type="number" min="0" value={v.stock} onChange={e=>patchVariant(i,{stock:Number(e.target.value)})}/></td><td><select value={v.useProductPricing?'product':'custom'} onChange={e=>patchVariant(i,{useProductPricing:e.target.value==='product'})}><option value="product">Product price</option><option value="custom">Custom price</option></select></td><td><input disabled={v.useProductPricing} type="number" min="0" step="0.01" value={v.price} onChange={e=>patchVariant(i,{price:e.target.value})} placeholder={String(form.price||'')}/></td><td><input disabled={v.useProductPricing} type="number" min="0" step="0.01" value={v.salePrice} onChange={e=>patchVariant(i,{salePrice:e.target.value})}/></td><td><input type="checkbox" checked={v.active} onChange={e=>patchVariant(i,{active:e.target.checked})}/></td></tr>)}</tbody></table></div></>}</section>
+  <div className="check-row"><label><input type="checkbox" checked={form.featured} onChange={e=>update('featured',e.target.checked)/> Hot Selling</label><label><input type="checkbox" checked={form.published} onChange={e=>update('published',e.target.checked)}/> Published</label></div><div className="form-actions"><button className="button-secondary" type="button" onClick={()=>router.back()}>Cancel</button><button disabled={saving} type="submit">{saving?'Uploading & saving...':'Save product'}</button></div>
+ </form>
 }

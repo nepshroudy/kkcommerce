@@ -1,4 +1,11 @@
 import "./globals.css";
+import "./phase2bcd.css";
+import "./phase3ab.css";
+import "./storefront-luxury-theme.css";
+import "./header-merchandising.css";
+import "./checkout-theme.css";
+import "./admin-luxury-theme.css";
+
 import Header from "@/components/Header";
 import StoreProvider from "@/components/store/StoreProvider";
 

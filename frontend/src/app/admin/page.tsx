@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { api } from '../../lib/api';
-import { clearSession, getStoredUser } from '../../lib/auth';
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "../../lib/api";
+import { getStoredUser } from "../../lib/auth";
 
 type Summary = {
   products: number;
@@ -16,64 +17,119 @@ type Summary = {
 export default function AdminPage() {
   const router = useRouter();
   const [summary, setSummary] = useState<Summary | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const user = getStoredUser();
-    if (!user || !['SUPERADMIN', 'ADMIN'].includes(user.role)) {
-      router.replace('/login');
+
+    if (!user || !["SUPERADMIN", "ADMIN"].includes(user.role)) {
+      router.replace("/login");
       return;
     }
 
-    api<Summary>('/dashboard/summary', { authenticated: true })
+    api<Summary>("/dashboard/summary", { authenticated: true })
       .then(setSummary)
       .catch((caught) => {
-        setError(caught instanceof Error ? caught.message : 'Unable to load dashboard');
+        setError(
+          caught instanceof Error ? caught.message : "Unable to load dashboard"
+        );
       });
   }, [router]);
 
-  function logout() {
-    clearSession();
-    router.push('/login');
-  }
-
   const cards = [
-    ['Products', summary?.products ?? '—'],
-    ['Categories', summary?.categories ?? '—'],
-    ['Orders', summary?.orders ?? '—'],
-    ['Customers', summary?.customers ?? '—'],
+    {
+      label: "Products",
+      value: summary?.products ?? "—",
+      hint: "Products in catalogue",
+      href: "/admin/products",
+      icon: "01",
+    },
+    {
+      label: "Orders",
+      value: summary?.orders ?? "—",
+      hint: "Orders received",
+      href: "/admin/orders",
+      icon: "02",
+    },
+    {
+      label: "Customers",
+      value: summary?.customers ?? "—",
+      hint: "Customer accounts",
+      href: "/admin/customers",
+      icon: "03",
+    },
+    {
+      label: "Categories",
+      value: summary?.categories ?? "—",
+      hint: "Store collections",
+      href: "/admin/categories",
+      icon: "04",
+    },
   ];
 
   return (
-    <main className="dashboard-shell">
-      <div className="dashboard-heading">
+    <div className="kk-admin-dashboard">
+      <section className="kk-admin-hero">
         <div>
-          <p className="eyebrow">KKCOMMERCE ADMIN</p>
+          <p className="kk-admin-kicker">KK CLOSET · ADMIN CONSOLE</p>
           <h1>Dashboard</h1>
-          <p className="muted">Your store overview and management centre.</p>
+          <p className="kk-admin-intro">
+            Store overview, performance and day-to-day management.
+          </p>
         </div>
-        <button className="secondary-button" onClick={logout}>Log out</button>
-      </div>
 
-      {error && <div className="error-box">{error}</div>}
+        <div className="kk-admin-hero-badge">
+          <span className="kk-admin-status-dot" />
+          Store operational
+        </div>
+      </section>
 
-      <section className="metric-grid">
-        {cards.map(([label, value]) => (
-          <article className="metric-card" key={label}>
-            <span>{label}</span>
-            <strong>{value}</strong>
-          </article>
+      {error && <div className="kk-admin-error">{error}</div>}
+
+      <section className="kk-admin-metrics">
+        {cards.map((card) => (
+          <Link href={card.href} className="kk-admin-metric-card" key={card.label}>
+            <div className="kk-admin-card-top">
+              <span className="kk-admin-card-index">{card.icon}</span>
+              <span className="kk-admin-card-arrow">↗</span>
+            </div>
+            <p>{card.label}</p>
+            <strong>{card.value}</strong>
+            <small>{card.hint}</small>
+          </Link>
         ))}
-        <article className="metric-card revenue-card">
-          <span>Paid revenue</span>
-          <strong>£{(summary?.revenue ?? 0).toFixed(2)}</strong>
+      </section>
+
+      <section className="kk-admin-dashboard-grid">
+        <article className="kk-admin-feature-card kk-admin-revenue-card">
+          <div>
+            <p className="kk-admin-section-label">PAID REVENUE</p>
+            <h2>£{(summary?.revenue ?? 0).toFixed(2)}</h2>
+            <p className="kk-admin-card-copy">
+              Confirmed paid order revenue currently recorded by KKCommerce.
+            </p>
+          </div>
+          <div className="kk-admin-revenue-mark">KK</div>
+        </article>
+
+        <article className="kk-admin-feature-card">
+          <p className="kk-admin-section-label">QUICK ACCESS</p>
+          <div className="kk-admin-quick-links">
+            <Link href="/admin/products/new">Add new product <span>→</span></Link>
+            <Link href="/admin/orders">Manage orders <span>→</span></Link>
+            <Link href="/admin/discounts">Discounts <span>→</span></Link>
+            <Link href="/admin/shipping">Shipping methods <span>→</span></Link>
+          </div>
         </article>
       </section>
 
-      <section className="panel">
-        <h2>Foundation ready</h2>
-        <p className="muted">Authentication, role protection and live dashboard statistics are connected.</p>
+      <section className="kk-admin-bottom-banner">
+        <div>
+          <p className="kk-admin-section-label">KK CLOSET</p>
+          <h2>Contemporary fashion, managed beautifully.</h2>
+        </div>
+        <Link href="/shop">View storefront <span>↗</span></Link>
       </section>
-    </main>
+    </div>
   );
 }

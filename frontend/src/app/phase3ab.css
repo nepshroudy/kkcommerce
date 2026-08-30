@@ -1,0 +1,18 @@
+.shipping-options{border:0;padding:0;margin:8px 0 18px}
+.shipping-options legend{font-weight:700;margin-bottom:10px}
+.shipping-option{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid #ddd5c9;border-radius:14px;padding:14px 16px;margin-bottom:10px;background:#fff;cursor:pointer}
+.shipping-option.selected{border-color:#17130f;box-shadow:0 0 0 1px #17130f}
+.shipping-option input{width:auto}
+.shipping-option span{display:flex;flex-direction:column;gap:3px}
+.shipping-option small,.stripe-note{color:#746b61;font-size:.86rem}
+.shipping-option b{white-space:nowrap}
+.shipping-admin-grid{display:grid;grid-template-columns:minmax(300px,430px) 1fr;gap:28px;align-items:start}
+.shipping-method-list{display:grid;gap:14px}
+.shipping-admin-card{border:1px solid #ded8d0;border-radius:16px;padding:18px;background:#fff;display:flex;justify-content:space-between;gap:18px;align-items:center}
+.shipping-admin-card h3{margin:3px 0 8px}
+.shipping-admin-card p{margin:0 0 8px;color:#625b53}
+.shipping-admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.default-pill{font-size:.7rem;padding:4px 8px;border-radius:999px;background:#17130f;color:#fff;vertical-align:middle}
+.form-success{padding:10px 12px;border-radius:10px;background:#f1f7ef;border:1px solid #cbdcc7}
+.block{display:block;margin-top:6px}
+@media(max-width:900px){.shipping-admin-grid{grid-template-columns:1fr}.shipping-admin-card{align-items:flex-start;flex-direction:column}}

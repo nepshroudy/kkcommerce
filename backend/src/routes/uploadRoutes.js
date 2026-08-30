@@ -1,0 +1,1 @@
+const express=require('express');const {upload,uploadProductImages}=require('../controllers/uploadController');const {auth,allowRoles}=require('../middleware/auth');const router=express.Router();router.post('/products',auth,allowRoles('SUPERADMIN','ADMIN'),upload.array('images',10),uploadProductImages);module.exports=router;

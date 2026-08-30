@@ -1,0 +1,3 @@
+import Link from 'next/link';
+import { api } from '@/lib/api';
+export default async function Collections(){let categories:any[]=[];try{categories=await api('/categories')}catch{}return <main className="max-w-6xl mx-auto p-6"><p className="eyebrow">SHOP BY COLLECTION</p><h1 className="text-4xl font-bold mb-8">Collections</h1>{categories.length===0?<div className="empty-state">No collections yet.</div>:<div className="collection-grid">{categories.map(c=><Link className="collection-card simple" href={`/collections/${c.slug}`} key={c.id}><div className="collection-image" style={{backgroundImage:`url(${c.imageUrl||''})`}}/><h2>{c.name}</h2><span>Shop collection →</span></Link>)}</div>}</main>}
