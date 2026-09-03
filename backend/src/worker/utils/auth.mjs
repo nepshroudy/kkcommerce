@@ -24,3 +24,14 @@ export async function requireRoles(request, env, roles) {
 export async function requireAdmin(request, env) {
   return requireRoles(request, env, ["SUPERADMIN", "ADMIN"]);
 }
+
+export async function requireProductOrderStaff(
+  request,
+  env
+) {
+  return requireRoles(
+    request,
+    env,
+    ["SUPERADMIN", "ADMIN", "EMPLOYEE"]
+  );
+}

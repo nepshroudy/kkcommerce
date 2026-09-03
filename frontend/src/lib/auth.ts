@@ -2,7 +2,11 @@ export type AuthUser = {
   id: number;
   name: string;
   email: string;
-  role: 'SUPERADMIN' | 'ADMIN' | 'CUSTOMER';
+  role:
+  | "SUPERADMIN"
+  | "ADMIN"
+  | "EMPLOYEE"
+  | "CUSTOMER";
 };
 
 const TOKEN_KEY = 'kkcommerce_token';

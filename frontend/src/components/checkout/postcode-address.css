@@ -1,0 +1,14 @@
+.postcode-address { display:grid; gap:14px; margin-top:18px; }
+.postcode-address-row { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:end; }
+.postcode-address-row label, .postcode-manual-fields label { display:grid; gap:7px; }
+.postcode-find-button { min-height:46px; padding:0 18px; border:0; border-radius:9px; background:#1c1915; color:#fff; font-weight:700; cursor:pointer; }
+.postcode-address-row input, .postcode-manual-fields input { min-height:46px; width:100%; border:1px solid #dfd5c8; border-radius:9px; padding:10px 12px; background:#fff; color:#1c1915; }
+.postcode-address-success { padding:12px 14px; border-radius:9px; background:#f4f7f2; color:#395139; font-size:13px; }
+.postcode-address-error { padding:12px 14px; border-radius:9px; background:#fff3f0; color:#8a3627; font-size:13px; }
+.postcode-manual-toggle { width:fit-content; border:0; padding:0; background:transparent; color:#8e6a2d; text-decoration:underline; cursor:pointer; }
+.postcode-manual-fields { display:grid; gap:12px; }
+.postcode-manual-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width:620px) {
+  .postcode-address-row, .postcode-manual-grid { grid-template-columns:1fr; }
+  .postcode-find-button { width:100%; }
+}

@@ -3,6 +3,7 @@ import { json, readJson, numberId } from "../utils/http.mjs";
 import {
   getAuthenticatedUser,
   requireAdmin,
+  requireProductOrderStaff,
 } from "../utils/auth.mjs";
 import { verifyJwt } from "../utils/jwt.mjs";
 
@@ -2077,10 +2078,10 @@ async function routeOrders(
       method === "GET" &&
       pathname === "/api/orders/admin/all"
     ) {
-      await requireAdmin(
-        request,
-        context.env
-      );
+      await requireProductOrderStaff(
+  request,
+  context.env
+);
 
       const orders =
         await context.prisma.order.findMany({
@@ -2104,10 +2105,10 @@ async function routeOrders(
       method === "PATCH" &&
       legacyStatusMatch
     ) {
-      await requireAdmin(
-        request,
-        context.env
-      );
+      await requireProductOrderStaff(
+  request,
+  context.env
+);
 
       const body = await readJson(request);
       const status = String(
@@ -2158,10 +2159,10 @@ async function routeOrders(
       method === "GET" &&
       pathname === "/api/admin/orders"
     ) {
-      await requireAdmin(
-        request,
-        context.env
-      );
+     await requireProductOrderStaff(
+  request,
+  context.env
+);
 
       const orders =
         await context.prisma.order.findMany({
@@ -2185,10 +2186,10 @@ async function routeOrders(
       method === "GET" &&
       adminOrderMatch
     ) {
-      await requireAdmin(
-        request,
-        context.env
-      );
+await requireProductOrderStaff(
+  request,
+  context.env
+);
 
       const order =
         await context.prisma.order.findUnique({
@@ -2220,10 +2221,10 @@ async function routeOrders(
       method === "PATCH" &&
       adminStatusMatch
     ) {
-      await requireAdmin(
-        request,
-        context.env
-      );
+await requireProductOrderStaff(
+  request,
+  context.env
+);
 
       const body = await readJson(request);
       const status = String(
@@ -2300,15 +2301,14 @@ export async function handleCommerceRoutes(
   const method =
     request.method.toUpperCase();
 
-  const handlers = [
-    routeAccount,
-    routeWishlist,
-    routeCustomers,
-    routeDashboard,
-    routeShipping,
-    routeDiscounts,
-    routeOrders,
-  ];
+ const handlers = [
+  routeAccount,
+  routeWishlist,
+  routeDashboard,
+  routeShipping,
+  routeDiscounts,
+  routeOrders,
+];
 
   for (const handler of handlers) {
     const response = await handler(

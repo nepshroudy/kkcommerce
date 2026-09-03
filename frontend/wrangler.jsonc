@@ -11,10 +11,7 @@
     "binding": "ASSETS"
   },
   "routes": [
-    {
-      "pattern": "kkcloset.uk",
-      "custom_domain": true
-    },
+  
     {
       "pattern": "shop.kkcloset.uk",
       "custom_domain": true

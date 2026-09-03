@@ -6,6 +6,11 @@ import "./header-merchandising.css";
 import "./checkout-theme.css";
 import "./admin-luxury-theme.css";
 import "./luxury-light-final.css";
+import "./storefront-bugfixes.css";
+import "./admin-price-fixes.css";
+import "./colour-image-admin.css";
+import "./product-detail-layout-fix.css";
+import "./gallery-swipe-colour.css";
 
 import { headers } from "next/headers";
 

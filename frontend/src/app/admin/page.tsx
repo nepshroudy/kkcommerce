@@ -31,7 +31,9 @@ export default function AdminPage() {
       .then(setSummary)
       .catch((caught) => {
         setError(
-          caught instanceof Error ? caught.message : "Unable to load dashboard"
+          caught instanceof Error
+            ? caught.message
+            : "Unable to load dashboard"
         );
       });
   }, [router]);
@@ -51,13 +53,7 @@ export default function AdminPage() {
       href: "/admin/orders",
       icon: "02",
     },
-    {
-      label: "Customers",
-      value: summary?.customers ?? "—",
-      hint: "Customer accounts",
-      href: "/admin/customers",
-      icon: "03",
-    },
+    
     {
       label: "Categories",
       value: summary?.categories ?? "—",
@@ -88,7 +84,11 @@ export default function AdminPage() {
 
       <section className="kk-admin-metrics">
         {cards.map((card) => (
-          <Link href={card.href} className="kk-admin-metric-card" key={card.label}>
+          <Link
+            href={card.href}
+            className="kk-admin-metric-card"
+            key={card.label}
+          >
             <div className="kk-admin-card-top">
               <span className="kk-admin-card-index">{card.icon}</span>
               <span className="kk-admin-card-arrow">↗</span>
@@ -100,7 +100,7 @@ export default function AdminPage() {
         ))}
       </section>
 
-      <section className="kk-admin-dashboard-grid">
+      <section className="kk-admin-dashboard-grid kk-admin-dashboard-grid-single">
         <article className="kk-admin-feature-card kk-admin-revenue-card">
           <div>
             <p className="kk-admin-section-label">PAID REVENUE</p>
@@ -111,16 +111,6 @@ export default function AdminPage() {
           </div>
           <div className="kk-admin-revenue-mark">KK</div>
         </article>
-
-        <article className="kk-admin-feature-card">
-          <p className="kk-admin-section-label">QUICK ACCESS</p>
-          <div className="kk-admin-quick-links">
-            <Link href="/admin/products/new">Add new product <span>→</span></Link>
-            <Link href="/admin/orders">Manage orders <span>→</span></Link>
-            <Link href="/admin/discounts">Discounts <span>→</span></Link>
-            <Link href="/admin/shipping">Shipping methods <span>→</span></Link>
-          </div>
-        </article>
       </section>
 
       <section className="kk-admin-bottom-banner">
@@ -128,13 +118,14 @@ export default function AdminPage() {
           <p className="kk-admin-section-label">KK CLOSET</p>
           <h2>Contemporary fashion, managed beautifully.</h2>
         </div>
+
         <a
-  href="https://kkcloset.uk"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  Visit storefront <span>↗</span>
-</a>
+          href="https://shop.kkcloset.uk"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Visit storefront <span>↗</span>
+        </a>
       </section>
     </div>
   );

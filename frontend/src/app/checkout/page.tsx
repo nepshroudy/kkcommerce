@@ -4,6 +4,11 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { useStore } from "@/components/store/StoreProvider";
+import PostcodeAddressLookup, {
+  CheckoutAddress,
+  emptyAddress,
+} from "@/components/checkout/PostcodeAddressLookup";
+
 
 type ShippingMethod = {
   id: number;
@@ -25,7 +30,8 @@ export default function Checkout() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] =
+  useState<CheckoutAddress>(emptyAddress);
   const [discountCode, setDiscountCode] = useState("");
   const [shippingMethods, setShippingMethods] = useState<ShippingMethod[]>([]);
   const [shippingMethodId, setShippingMethodId] = useState<number | null>(null);
@@ -67,6 +73,27 @@ export default function Checkout() {
     event.preventDefault();
     setError("");
 
+    if (
+  !address.house ||
+  !address.street ||
+  !address.city ||
+  !address.postcode
+) {
+  throw new Error(
+    "Please enter a complete delivery address."
+  );
+}
+
+const shippingAddress = [
+  `${address.house} ${address.street}`.trim(),
+  address.line2,
+  address.city,
+  address.county,
+  address.postcode,
+]
+  .filter(Boolean)
+  .join("\n");
+
     if (!paymentsEnabled) {
       setError(
         "Online payment is not enabled yet. The store is currently in deployment testing mode."
@@ -89,7 +116,7 @@ export default function Checkout() {
           body: JSON.stringify({
             customerName: name,
             customerEmail: email,
-            shippingAddress: address,
+            shippingAddress,
             shippingMethodId,
             discountCode: discountCode.trim() || undefined,
             items: cart.map((item) => ({
@@ -187,20 +214,16 @@ export default function Checkout() {
                 </label>
               </div>
 
-              <label className="checkout-full-field">
-                <span>Delivery address</span>
+              
+<div className="checkout-full-field">
+  <span>Delivery address</span>
 
-                <textarea
-                  required
-                  rows={5}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder={
-                    "House number and street\nTown / City\nPostcode"
-                  }
-                />
-              </label>
-            </section>
+  <PostcodeAddressLookup
+    value={address}
+    onChange={setAddress}
+  />
+</div>
+</section>
 
             <section className="checkout-section checkout-delivery-section">
               <div className="checkout-section-title">

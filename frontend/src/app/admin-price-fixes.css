@@ -1,0 +1,249 @@
+/* =========================================================
+   KK CLOSET — ADMIN LOCK + PRODUCT CARD POLISH
+   ========================================================= */
+
+/* Product card structure */
+.kk-product-card {
+  min-width: 0;
+}
+
+.kk-product-image-wrap {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: #f1ece4;
+  border: 1px solid var(--lux-border, #e4dbcf);
+  border-radius: 14px;
+  text-decoration: none;
+}
+
+.kk-product-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.kk-product-card:hover .kk-product-image {
+  transform: scale(1.025);
+}
+
+.kk-product-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+
+.kk-card-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 27px;
+  padding: 5px 9px;
+  border: 1px solid rgba(184, 148, 82, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #514940;
+  box-shadow: 0 5px 18px rgba(41, 31, 20, 0.07);
+  backdrop-filter: blur(8px);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kk-card-badge-sale {
+  background: #1c1915;
+  border-color: #1c1915;
+  color: #fff;
+}
+
+.kk-card-badge-featured {
+  background: #ede2cb;
+  border-color: #d9c296;
+  color: #76551f;
+}
+
+.kk-card-badge-new {
+  background: #fff;
+  color: #1c1915;
+}
+
+.kk-product-info {
+  display: grid;
+  gap: 9px;
+  padding-top: 14px;
+}
+
+.kk-product-name {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #1c1915 !important;
+  text-decoration: none;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.kk-product-name:hover {
+  color: #8e6a2d !important;
+}
+
+.kk-product-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 9px;
+  min-height: 26px;
+}
+
+.kk-price-current {
+  color: #1c1915;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.kk-price-current.kk-price-sale {
+  color: #8e6a2d;
+}
+
+.kk-price-was {
+  color: #8c847c;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.kk-price-saving {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #ede2cb;
+  color: #76551f;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.kk-product-stock {
+  min-height: 20px;
+}
+
+.kk-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.kk-stock::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.kk-stock-in {
+  color: #526a55;
+}
+
+.kk-stock-low {
+  color: #9b6c25;
+}
+
+.kk-stock-out {
+  color: #8b4a44;
+}
+
+.kk-product-options-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 2px;
+  padding: 10px 13px;
+  border: 1px solid #d7c9b5;
+  border-radius: 9px;
+  background: #fff;
+  color: #1c1915 !important;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.kk-product-options-button:hover {
+  background: #1c1915;
+  border-color: #1c1915;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+/* Dashboard now has one wide feature card after Quick Access removal. */
+.kk-admin-dashboard-grid-single {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+@media (max-width: 560px) {
+  .kk-product-badges {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    gap: 5px;
+  }
+
+  .kk-card-badge {
+    min-height: 23px;
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+
+  .kk-product-info {
+    gap: 7px;
+    padding-top: 10px;
+  }
+
+  .kk-product-name {
+    font-size: 15px;
+  }
+
+  .kk-price-current {
+    font-size: 16px;
+  }
+
+  .kk-price-saving {
+    width: max-content;
+  }
+
+  .kk-product-options-button {
+    min-height: 39px;
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+}

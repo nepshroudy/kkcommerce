@@ -1,5 +1,8 @@
-import { readJson, json, numberId } from "../utils/http.mjs";
-import { requireAdmin } from "../utils/auth.mjs";
+﻿import { readJson, json, numberId } from "../utils/http.mjs";
+import {
+  requireAdmin,
+  requireProductOrderStaff,
+} from "../utils/auth.mjs";
 import { makeSlug, makeSkuPart } from "../utils/slug.mjs";
 
 const productInclude = {
@@ -17,6 +20,30 @@ const money = (value) =>
   value === "" || value == null
     ? null
     : String(Number(value).toFixed(2));
+
+function normalizeImages(raw) {
+  if (!Array.isArray(raw)) return null;
+
+  const seen = new Set();
+
+  return raw
+    .map((item) => {
+      const object =
+        typeof item === "string" ? { url: item } : item || {};
+
+      const url = text(object.url);
+      if (!url || seen.has(url)) return null;
+
+      seen.add(url);
+
+      return {
+        url,
+        alt: text(object.alt),
+        colour: text(object.colour),
+      };
+    })
+    .filter(Boolean);
+}
 
 function cleanProductInput(body, isUpdate = false) {
   const data = {};
@@ -221,7 +248,10 @@ export async function getProductRoute(_request, context, slug) {
 
 export async function adminListProductsRoute(request, context) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
 
     const products = await context.prisma.product.findMany({
       include: productInclude,
@@ -241,7 +271,10 @@ export async function adminListProductsRoute(request, context) {
 
 export async function adminGetProductRoute(request, context, idValue) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
 
     const id = numberId(idValue);
     if (!id) return json({ message: "Invalid product ID" }, 400);
@@ -266,7 +299,10 @@ export async function adminGetProductRoute(request, context, idValue) {
 
 export async function createProductRoute(request, context) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
     const body = await readJson(request);
 
     const name = String(body.name || "").trim();
@@ -283,7 +319,7 @@ export async function createProductRoute(request, context) {
       );
     }
 
-    const images = Array.isArray(body.images) ? body.images : [];
+    const images = normalizeImages(body.images) || [];
     const variants = normalizeVariants(
       body.variants || [],
       body.sku || name
@@ -312,11 +348,7 @@ export async function createProductRoute(request, context) {
       data: {
         ...data,
         images: {
-          create: images
-            .filter(Boolean)
-            .map((url) => ({
-              url: String(url).trim(),
-            })),
+          create: images,
         },
         ...(variants?.length
           ? {
@@ -354,7 +386,10 @@ export async function updateProductRoute(
   idValue
 ) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
 
     const id = numberId(idValue);
     if (!id) return json({ message: "Invalid product ID" }, 400);
@@ -403,9 +438,10 @@ export async function updateProductRoute(
       );
     }
 
-    const images = Array.isArray(body.images)
-      ? body.images.filter(Boolean)
-      : null;
+    const images =
+      body.images !== undefined
+        ? normalizeImages(body.images)
+        : null;
 
     const product = await context.prisma.$transaction(
       async (tx) => {
@@ -428,9 +464,7 @@ export async function updateProductRoute(
             ...(images
               ? {
                   images: {
-                    create: images.map((url) => ({
-                      url: String(url).trim(),
-                    })),
+                    create: images,
                   },
                 }
               : {}),
@@ -474,7 +508,10 @@ export async function deleteProductRoute(
   idValue
 ) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
 
     const id = numberId(idValue);
     if (!id) return json({ message: "Invalid product ID" }, 400);
@@ -507,3 +544,4 @@ export async function deleteProductRoute(
     );
   }
 }
+

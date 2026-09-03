@@ -10,6 +10,7 @@ datasource db {
 enum Role {
   SUPERADMIN
   ADMIN
+  EMPLOYEE
   CUSTOMER
 }
 
@@ -43,10 +44,22 @@ model User {
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  active                    Boolean   @default(true)
+  staffInviteTokenHash      String?   @unique
+  staffInviteExpiresAt      DateTime?
+  staffInviteAcceptedAt     DateTime?
 
   orders         Order[]
   wishlistItems  WishlistItem[]
   discountUsages DiscountUsage[]
+
+  emailVerifiedAt            DateTime?
+emailVerificationTokenHash String?   @unique
+emailVerificationExpiresAt DateTime?
+
+passwordResetTokens PasswordResetToken[]
+
+
 }
 
 model Category {
@@ -87,9 +100,12 @@ model ProductImage {
   id        Int     @id @default(autoincrement())
   url       String
   alt       String?
+  colour    String?
   productId Int
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, colour])
 }
 
 model ProductVariant {
@@ -226,4 +242,17 @@ model DiscountUsage {
   productId Int?
 
   @@index([discountId, email])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
 }

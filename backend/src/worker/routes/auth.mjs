@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { readJson, json } from "../utils/http.mjs";
 import { signJwt } from "../utils/jwt.mjs";
 import { getAuthenticatedUser } from "../utils/auth.mjs";
+import { issueCustomerVerification } from "./email-verification.mjs";
 
 function publicUser(user) {
   return {
@@ -64,15 +65,16 @@ export async function registerRoute(request, context) {
       },
     });
 
-    const token = await createToken(user, context.env);
+    await issueCustomerVerification(context, user);
 
-    return json(
-      {
-        token,
-        user: publicUser(user),
-      },
-      201
-    );
+return json(
+  {
+    message:
+      "Account created. Please check your email to verify your account.",
+    verificationRequired: true,
+  },
+  201
+);
   } catch (error) {
     console.error("Register failed:", error);
     return json(
@@ -100,13 +102,38 @@ export async function loginRoute(request, context) {
       return json({ message: "Invalid credentials" }, 401);
     }
 
-    const matches = await bcrypt.compare(password, user.password);
+   const matches = await bcrypt.compare(password, user.password);
 
-    if (!matches) {
-      return json({ message: "Invalid credentials" }, 401);
-    }
+if (!matches) {
+  return json({ message: "Invalid credentials" }, 401);
+}
 
-    const token = await createToken(user, context.env);
+if (user.role === "CUSTOMER" && !user.emailVerifiedAt) {
+  return json(
+    {
+      message: "Please verify your email before signing in",
+      code: "EMAIL_NOT_VERIFIED",
+    },
+    403
+  );
+}
+
+if (
+  ["SUPERADMIN", "ADMIN", "EMPLOYEE"].includes(
+    user.role
+  ) &&
+  user.active === false
+) {
+  return json(
+    {
+      message:
+        "Staff access has been removed.",
+    },
+    403
+  );
+}
+
+const token = await createToken(user, context.env);
 
     return json({
       token,

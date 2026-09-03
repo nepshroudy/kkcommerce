@@ -1,3 +1,8 @@
+import {
+  forgotPasswordRoute,
+  resetPasswordRoute,
+} from "./routes/password-reset.mjs";
+
 import { withCors } from "./context.mjs";
 
 import { healthRoute } from "./routes/health.mjs";
@@ -7,6 +12,11 @@ import {
   loginRoute,
   meRoute,
 } from "./routes/auth.mjs";
+
+import {
+  verifyCustomerEmailRoute,
+  resendCustomerVerificationRoute,
+} from "./routes/email-verification.mjs";
 
 import {
   listCategoriesRoute,
@@ -32,6 +42,23 @@ import {
 import {
   handleCommerceRoutes,
 } from "./routes/commerce.mjs";
+import {
+  postcodeLookupRoute,
+} from "./routes/address-lookup.mjs";
+import {
+  listStaffRoute,
+  createStaffRoute,
+  updateStaffRoute,
+  revokeStaffAccessRoute,
+  convertStaffToCustomerRoute,
+  resendStaffInviteRoute,
+  acceptStaffInviteRoute,
+} from "./routes/staff.mjs";
+import {
+  adminOrdersByDateRoute,
+} from "./routes/admin-orders-by-date.mjs";
+
+
 
 function normalizePath(pathname) {
   if (!pathname || pathname === "/") return "/";
@@ -69,6 +96,10 @@ export async function routeRequest(request, context) {
   ) {
     response = await healthRoute(request, context);
 
+
+
+
+
   } else if (
     method === "POST" &&
     pathname === "/api/auth/register"
@@ -84,6 +115,34 @@ export async function routeRequest(request, context) {
     pathname === "/api/auth/me"
   ) {
     response = await meRoute(request, context);
+
+    } else if (
+  method === "POST" &&
+  pathname === "/api/auth/verify-email"
+) {
+  response = await verifyCustomerEmailRoute(request, context);
+} else if (
+  method === "POST" &&
+  pathname === "/api/auth/resend-verification"
+) {
+  response = await resendCustomerVerificationRoute(request, context);
+
+  } else if (
+  method === "POST" &&
+  pathname === "/api/auth/forgot-password"
+) {
+  response = await forgotPasswordRoute(
+    request,
+    context
+  );
+} else if (
+  method === "POST" &&
+  pathname === "/api/auth/reset-password"
+) {
+  response = await resetPasswordRoute(
+    request,
+    context
+  );
 
   } else if (
     method === "GET" &&
@@ -164,6 +223,65 @@ export async function routeRequest(request, context) {
       context,
       decodeURIComponent(parts[2])
     );
+  } else if (
+    method === "GET" &&
+    pathname === "/api/admin/orders"
+  ) {
+    response = await adminOrdersByDateRoute(
+      request,
+      context
+    );
+  } else if (
+    method === "POST" &&
+    pathname === "/api/staff/accept-invite"
+  ) {
+    response = await acceptStaffInviteRoute(request, context);
+  } else if (
+    method === "GET" &&
+    pathname === "/api/staff"
+  ) {
+    response = await listStaffRoute(request, context);
+  } else if (
+    method === "POST" &&
+    pathname === "/api/staff"
+  ) {
+    response = await createStaffRoute(request, context);
+  } else if (
+    method === "PATCH" &&
+    parts.length === 3 &&
+    parts[0] === "api" &&
+    parts[1] === "staff"
+  ) {
+    response = await updateStaffRoute(request, context, parts[2]);
+  } else if (
+    method === "POST" &&
+    parts.length === 4 &&
+    parts[0] === "api" &&
+    parts[1] === "staff" &&
+    parts[3] === "revoke"
+  ) {
+    response = await revokeStaffAccessRoute(request, context, parts[2]);
+  } else if (
+    method === "POST" &&
+    parts.length === 4 &&
+    parts[0] === "api" &&
+    parts[1] === "staff" &&
+    parts[3] === "convert-to-customer"
+  ) {
+    response = await convertStaffToCustomerRoute(request, context, parts[2]);
+  } else if (
+    method === "POST" &&
+    parts.length === 4 &&
+    parts[0] === "api" &&
+    parts[1] === "staff" &&
+    parts[3] === "resend-invite"
+  ) {
+    response = await resendStaffInviteRoute(request, context, parts[2]);
+  } else if (
+    method === "GET" &&
+    pathname === "/api/address/postcode"
+  ) {
+    response = await postcodeLookupRoute(request, context);
   } else {
     response = await handleCommerceRoutes(request, context);
 
@@ -177,3 +295,5 @@ export async function routeRequest(request, context) {
 
   return withCors(response, request, context.env);
 }
+
+

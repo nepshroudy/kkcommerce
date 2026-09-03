@@ -1,0 +1,10 @@
+ALTER TYPE "Role" ADD VALUE IF NOT EXISTS 'EMPLOYEE';
+
+ALTER TABLE "User"
+  ADD COLUMN IF NOT EXISTS "active" BOOLEAN NOT NULL DEFAULT true,
+  ADD COLUMN IF NOT EXISTS "staffInviteTokenHash" TEXT,
+  ADD COLUMN IF NOT EXISTS "staffInviteExpiresAt" TIMESTAMP(3),
+  ADD COLUMN IF NOT EXISTS "staffInviteAcceptedAt" TIMESTAMP(3);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "User_staffInviteTokenHash_key"
+ON "User"("staffInviteTokenHash");

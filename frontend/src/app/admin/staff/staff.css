@@ -1,0 +1,55 @@
+.kk-staff-page {
+  display: grid;
+  gap: 22px;
+}
+
+.kk-staff-create-card {
+  padding: 24px;
+}
+
+.kk-staff-create-card h2 {
+  margin: 0 0 18px;
+}
+
+.kk-staff-create-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.kk-staff-create-form label {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.kk-staff-create-form input,
+.kk-staff-create-form select,
+.kk-staff-page table select {
+  min-height: 42px;
+  border: 1px solid var(--lux-border, #e4dbcf);
+  border-radius: 8px;
+  padding: 8px 11px;
+  background: #fff;
+  color: var(--lux-text, #1c1915);
+}
+
+.kk-staff-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 960px) {
+  .kk-staff-create-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .kk-staff-create-form {
+    grid-template-columns: 1fr;
+  }
+}

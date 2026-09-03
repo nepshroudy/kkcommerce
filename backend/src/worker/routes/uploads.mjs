@@ -1,4 +1,6 @@
-import { requireAdmin } from "../utils/auth.mjs";
+import {
+  requireProductOrderStaff,
+} from "../utils/auth.mjs";
 import { json } from "../utils/http.mjs";
 
 const ALLOWED_TYPES = new Set([
@@ -36,7 +38,10 @@ function makeObjectKey(file) {
 
 export async function uploadProductImagesRoute(request, context) {
   try {
-    await requireAdmin(request, context.env);
+    await requireProductOrderStaff(
+  request,
+  context.env
+);
 
     if (!context.env.PRODUCT_IMAGES) {
       return json(
